@@ -8,7 +8,7 @@
     "start": "node index.js",
     "build": "webpack",
     "electron": "electron .",
-    "package" : "electron-packager . 'De la cuerda al pdf' "
+    "package" : "electron-packager . DeLaCuerdaAlPdf "
   },
   "author": "Emiliano Alonzo <emialonzo@gmail.com>",
   "license": "MIT",
@@ -21,5 +21,5 @@
     "electron": "^2.0.2",
     "electron-packager": "^12.1.0"
   },
-  "productName": "De la cuerda al pdf"  
+  "productName": "De la cuerda al pdf"
 }
