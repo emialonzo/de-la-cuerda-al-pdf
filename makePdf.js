@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 const PDFDocument = require('pdfkit')
-const blobStream = require('blob-stream')
+// const blobStream = require('blob-stream')
 const encoding = require("encoding");
 var fs = require('fs')
 
@@ -103,38 +103,38 @@ function procesar(text) {
         
   }
 
-  function hacerDocumentoUrl(cb){
-    //   let fileName = 'output.pdf';
-      var doc = new PDFDocument()
-    // doc.pipe(fs.createWriteStream(fileName))
-    doc.fontSize(25)
-    .text('Librito de acordes! :)', 120, 100)
+//   function hacerDocumentoUrl(cb){
+//     //   let fileName = 'output.pdf';
+//       var doc = new PDFDocument()
+//     // doc.pipe(fs.createWriteStream(fileName))
+//     doc.fontSize(25)
+//     .text('Librito de acordes! :)', 120, 100)
 
-    Object.keys(listasPorArtista).forEach(function(key) {
-        listasPorArtista[key].map(elm => {
-            console.log(`Agregando pagina para ${elm.cancion} de ${elm.artista} `);
-            doc.addPage()
-            .font('Courier')
-            .fontSize(15)
-            .text(`${elm.cancion} de ${elm.artista}`, 30, 20, {
-                link:elm.url
-            })
-                .moveDown(0.5)
-            .fontSize(10)
-            .text(elm.letra, {
-                columns: 2,
-            })
-        })
-    });
-    doc.end();
+//     Object.keys(listasPorArtista).forEach(function(key) {
+//         listasPorArtista[key].map(elm => {
+//             console.log(`Agregando pagina para ${elm.cancion} de ${elm.artista} `);
+//             doc.addPage()
+//             .font('Courier')
+//             .fontSize(15)
+//             .text(`${elm.cancion} de ${elm.artista}`, 30, 20, {
+//                 link:elm.url
+//             })
+//                 .moveDown(0.5)
+//             .fontSize(10)
+//             .text(elm.letra, {
+//                 columns: 2,
+//             })
+//         })
+//     });
+//     doc.end();
         
-    var stream = doc.pipe(blobStream());        
-    stream.on('finish', function() {
-        var url =  stream.toBlobURL('application/pdf');
-        console.log('en make es ' + url)
-        cb(url);
-    });
-  }
+//     var stream = doc.pipe(blobStream());        
+//     stream.on('finish', function() {
+//         var url =  stream.toBlobURL('application/pdf');
+//         console.log('en make es ' + url)
+//         cb(url);
+//     });
+//   }
 
 
 
