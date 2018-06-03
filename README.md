@@ -3,9 +3,24 @@ App de escritorio para generar pdf de acordes
 
 Lee acordes links de acordes (como se muestra abajo), los procesa y genera un pdf en columnas.
 
-Herramientas:
+## Ejecutar
+Instrucciones para ejecutar 
+```
+git clone git@github.com:emialonzo/de-la-cuerda-al-pdf.git
+cd de-la-cuerda-al-pdf
+npm install
+npm run electron
+```
+
+En una linea
+```
+git clone git@github.com:emialonzo/de-la-cuerda-al-pdf.git && cd de-la-cuerda-al-pdf && npm install && npm run electron
+```
+
+### Herramientas:
 - http://pdfkit.org/
 - https://electronjs.org/
+
 
 
 ```
