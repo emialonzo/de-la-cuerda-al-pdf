@@ -1,18 +1,29 @@
 {
-  "name": "lacuerda",
+  "name": "WebChordsBook",
   "version": "1.0.0",
-  "description": "",
+  "description": "Web app to make pdf book from urls ",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "build": "webpack",
+    "electron": "electron ."
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Emiliano Alonzo <emialonzo@gmail.com>",
+  "license": "MIT",
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
+    "blob-stream": "^0.1.3",
     "encoding": "^0.1.12",
-    "node-fetch": "^2.1.2",
     "pdfkit": "^0.8.3",
-    "windows-1252": "^1.0.0"
+    "node-fetch": "^2.1.2"
+  },
+  "devDependencies": {
+    "brfs": "^1.6.1",
+    "electron": "^2.0.2",
+    "json-loader": "^0.5.7",
+    "transform-loader": "^0.2.4",
+    "webpack": "^4.8.3",
+    "webpack-cli": "^2.1.3"
   }
 }

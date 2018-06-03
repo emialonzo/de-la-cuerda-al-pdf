@@ -1,86 +1,85 @@
-// import fetch from 'node-fetch';
-const fetch = require('node-fetch');
-var fs = require('fs')
-var PDFDocument = require('pdfkit')
-var windows1252 = require('windows-1252');
-var encoding = require("encoding");
+// Modules to control application life and create native browser window
+const {app, BrowserWindow, ipcMain} = require('electron')
+const makepdf = require('./makePdf')
+var fs = require('fs');
 
-  var doc = new PDFDocument()
-  doc.pipe(fs.createWriteStream('output.pdf'))
-  doc.fontSize(25)
-  .text('Librito de acordes! :)', 120, 100)
 
-  // http://acordes.lacuerda.net/TXT/zambayonny/120_monedas.txt
-  var listaAcordes = [
-    'http://acordes.lacuerda.net/TXT/zambayonny/120_monedas.txt',
-    'http://acordes.lacuerda.net/TXT/zambayonny/yo_los_considero_mis_hermanos.txt',
-'http://acordes.lacuerda.net/TXT/4_pesos_de_propina/mi_revolucion.txt',
-'http://acordes.lacuerda.net/TXT/4_pesos_de_propina/esa_mezcla_de_placer_y_dolor.txt'
-  ]
 
-  var count = listaAcordes.length;
 
-  listaAcordes.map(url=>generatePdfPage(url));
+// Keep a global reference of the window object, if you don't, the window will
+// be closed automatically when the JavaScript object is garbage collected.
+let mainWindow
 
-function generatePdfPage(url){
-  fetch(url)
-    .then(res => res.buffer())
-    .then(res => encoding.convert(res, "UTF-8", "CP1252"))
-    .then(res => res.toString())
-    .then(body =>{
+function createWindow () {
+  // Create the browser window.
+  mainWindow = new BrowserWindow({width: 800, height: 600})
 
-  // body = encoding.convert(body, "UTF-8", "CP1252");
+  // and load the index.html of the app.
+  mainWindow.loadFile('index.html')
 
-  // body = procesar2(body)
-  procesado = procesar(body)
+  // Open the DevTools.
+  // mainWindow.webContents.openDevTools()
 
-  // Add another page
-  doc.addPage()
-  .font('Courier')
-  .fontSize(15)
-  .text(`${procesado.cancion} de ${procesado.artista}`, 30, 20)
-   .moveDown(0.5)
-  .fontSize(10)
-  .text(procesado.letra)
+  // Emitted when the window is closed.
+  mainWindow.on('closed', function () {
+    // Dereference the window object, usually you would store windows
+    // in an array if your app supports multi windows, this is the time
+    // when you should delete the corresponding element.
+    mainWindow = null
+  })
+}
 
-  // Finalize PDF file
-  count = count -1
-  if(count===0){
-    doc.end()
+// This method will be called when Electron has finished
+// initialization and is ready to create browser windows.
+// Some APIs can only be used after this event occurs.
+app.on('ready', createWindow)
+
+// Quit when all windows are closed.
+app.on('window-all-closed', function () {
+  // On OS X it is common for applications and their menu bar
+  // to stay active until the user quits explicitly with Cmd + Q
+  if (process.platform !== 'darwin') {
+    app.quit()
   }
-  else{
-    console.log(`Se proceso ${url}, quedan ${count} `)
-  }
-
 })
-}
 
-
-function removeLacuerda2(text){
-  // let regexRemove = /[=]+ lacuerda.net [=]+[^]+[=]+ lacuerda.net [=]/gm;
-  let regexRemove = /[=]{27} lacuerda.net [=]+[^]+[=]+ lacuerda.net [=]{28}/gm;
-  return text.replace(regexRemove, '')
-}
-
-// =====================================================================
-function procesar2(text){
-  let regexRemove = /[=]{69}(?:.|[\r\n])*(?:ARTISTA:\s*([^|]*))(?:.|[\r\n])*(?:CANCION:\s*([^|]*))(?:.|[\r\n])*[=]{69}/gm;
-  //var hallado = text.match(regexRemove);
-  var hallado = regexRemove.exec(text);
-  console.log(`${hallado[2].trim()} de ${hallado[1].trim()} `)
-  // return text.replace(regexRemove, '')
-  return `${hallado[2].trim()} de ${hallado[1].trim()}\n${removeLacuerda2(text.replace(regexRemove, ''))}`
-}
-
-function procesar(text){
-  let regexRemove = /[=]{69}(?:.|[\r\n])*(?:ARTISTA:\s*([^|]*))(?:.|[\r\n])*(?:CANCION:\s*([^|]*))(?:.|[\r\n])*[=]{69}/gm;
-  //var hallado = text.match(regexRemove);
-  var hallado = regexRemove.exec(text);
-  console.log(`${hallado[2].trim()} de ${hallado[1].trim()} `)
-  // return text.replace(regexRemove, '')
-  return {
-    cancion:hallado[2].trim(),
-    artista:hallado[1].trim(),
-    letra:removeLacuerda2(text.replace(regexRemove, ''))
+app.on('activate', function () {
+  // On OS X it's common to re-create a window in the app when the
+  // dock icon is clicked and there are no other windows open.
+  if (mainWindow === null) {
+    createWindow()
   }
+})
+
+function pdfListo(fileName, event){
+  console.log('+++++ Pdf Listo +++++')
+  event.sender.send('enviar-pdf', fileName); 
 }
+
+var globalFileName = '';
+
+ipcMain.on('create-document', (event, urls) => {
+  console.log('---------------')
+  console.log(urls)
+  console.log('---------------')
+    makepdf.convertirPromise(urls)
+    .then(fileName => {
+      globalFileName = fileName;
+      return fileName;
+    })
+    .then(fileName => pdfListo(fileName, event))
+    .catch(e => console.error(e));
+  });
+
+  ipcMain.on('guardar-en', (event, fileName) => {
+    fs.createReadStream(globalFileName).pipe(fs.createWriteStream(fileName));
+  });
+  
+  // .then(url => {
+  //         console.log('>>' +url);
+  //         event.sender.send('enviar-pdf', url);
+  //       });
+      // Reply on async message from renderer process
+
+// In this file you can include the rest of your app's specific main process
+// code. You can also put them in separate files and require them here.
