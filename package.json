@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
     "build": "webpack",
-    "electron": "electron ."
+    "electron": "electron .",
+    "package" : "electron-packager . 'De la cuerda al pdf' "
   },
   "author": "Emiliano Alonzo <emialonzo@gmail.com>",
   "license": "MIT",
