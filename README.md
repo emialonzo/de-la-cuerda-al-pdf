@@ -3,6 +3,9 @@ App de escritorio para generar pdf de acordes
 
 Lee acordes links de acordes (como se muestra abajo), los procesa y genera un pdf en columnas.
 
+Herramientas:
+- http://pdfkit.org/
+- https://electronjs.org/
 
 
 ```
